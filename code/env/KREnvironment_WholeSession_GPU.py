@@ -192,7 +192,7 @@ class KREnvironment_WholeSession_GPU(BaseRLEnvironment):
         
         # random sample users
         self.batch_iter = iter(DataLoader(self.reader, batch_size = BS, shuffle = True, 
-                                          pin_memory = True, num_workers = 8))
+                                          pin_memory = False, num_workers = 0))
         sample_info = next(self.batch_iter)
         self.sample_batch = self.get_observation_from_batch(sample_info)
         self.current_observation = self.sample_batch
@@ -432,7 +432,7 @@ class KREnvironment_WholeSession_GPU(BaseRLEnvironment):
             new_sample_flag = True
         if new_sample_flag:
             self.batch_iter = iter(DataLoader(self.reader, batch_size = self.episode_batch_size, shuffle = True, 
-                                              pin_memory = True, num_workers = 8))
+                                              pin_memory = False, num_workers = 0))
             sample_info = next(self.batch_iter)
         return sample_info
     
@@ -441,7 +441,7 @@ class KREnvironment_WholeSession_GPU(BaseRLEnvironment):
     
     def get_new_iterator(self, B):
         return iter(DataLoader(self.reader, batch_size = B, shuffle = True, 
-                               pin_memory = True, num_workers = 8))
+                               pin_memory = False, num_workers = 0))
     
 
     def create_observation_buffer(self, buffer_size):

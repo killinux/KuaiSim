@@ -187,7 +187,7 @@ class KREnvironment_InfiniteRec_GPU():
         # reset data loader
         BS = self.episode_batch_size
         self.iter = iter(DataLoader(self.reader, batch_size = BS, shuffle = True, 
-                                          pin_memory = True, num_workers = 8))
+                                          pin_memory = False, num_workers = 0))
         
         # initial observation
         initial_sample = next(self.iter)
@@ -268,7 +268,7 @@ class KREnvironment_InfiniteRec_GPU():
                     new_sample_flag = True
                 if new_sample_flag:
                     self.iter = iter(DataLoader(self.reader, batch_size = done_mask.shape[0], shuffle = True, 
-                                                pin_memory = True, num_workers = 8))
+                                                pin_memory = False, num_workers = 0))
                     sample_info = next(self.iter)
                 new_observation = self.get_observation_from_batch(sample_info)
                 self.current_observation = new_observation
@@ -431,7 +431,7 @@ class KREnvironment_InfiniteRec_GPU():
     
     def get_new_iterator(self, B):
         return iter(DataLoader(self.reader, batch_size = B, shuffle = True, 
-                               pin_memory = True, num_workers = 8))
+                               pin_memory = False, num_workers = 0))
         
     def get_env_report(self, window = 50):
         return {}

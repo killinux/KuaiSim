@@ -145,7 +145,7 @@ class KRCrossSessionEnvironment_ModelBased():
         BS = params['batch_size']
         self.episode_batch_size = BS
         self.batch_iter = iter(DataLoader(self.reader, batch_size = BS, shuffle = True, 
-                                          pin_memory = True, num_workers = 8))
+                                          pin_memory = False, num_workers = 0))
         initial_sample = next(self.batch_iter)
         self.current_observation = self.get_observation_from_batch(initial_sample)
         
@@ -258,7 +258,7 @@ class KRCrossSessionEnvironment_ModelBased():
                         new_sample_flag = True
                     if new_sample_flag:
                         self.iter = iter(DataLoader(self.reader, batch_size = done_mask.shape[0], shuffle = True, 
-                                                    pin_memory = True, num_workers = 8))
+                                                    pin_memory = False, num_workers = 0))
                         sample_info = next(self.iter)
                     new_observation = self.get_observation_from_batch(sample_info)
                     self.current_observation = new_observation
@@ -387,7 +387,7 @@ class KRCrossSessionEnvironment_ModelBased():
     
     def get_new_iterator(self, B):
         return iter(DataLoader(self.reader, batch_size = B, shuffle = True, 
-                               pin_memory = True, num_workers = 8))
+                               pin_memory = False, num_workers = 0))
     
         
         
