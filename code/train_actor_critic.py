@@ -50,6 +50,8 @@ if __name__ == '__main__':
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
         torch.cuda.set_device(args.cuda)
         device = f"cuda:{args.cuda}"
+    elif args.cuda >= 0 and getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+        device = "mps"
     else:
         device = "cpu"
     args.device = device
