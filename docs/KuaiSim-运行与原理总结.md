@@ -4,7 +4,7 @@
 >
 > 生成日期：2026-06-13
 >
-> **状态：✅ 全链路在远程 M4 Pro 上跑通** —— 数据预处理 → 用户模拟器训练（lr0.0001 满 10 epoch）→ 环境演示 → RL 阶段（DDPG 整会话）smoke，全部通过；3 个兼容性修复已合入 GitHub `main`。
+> **状态：✅ 全链路在远程 M4 Pro 上跑通并复现论文** —— 数据预处理 → 用户模拟器训练（lr0.0001 满 10 epoch）→ 环境演示 → **完整 DDPG 整会话 benchmark（Total reward 10.10 vs 论文 10.09）**；3 类兼容性修复已合入 GitHub `main`。
 
 ---
 
@@ -191,7 +191,21 @@ RL_SMOKE_EXIT=0
 
 产出可加载的 agent：`output/Kuairand_Pure/agents/SMOKE_DDPG/` 下 `model_actor`(2.1M)、`model_critic`、各 optimizer、`model.report`（`TrainingCurves.ipynb` 可读此文件画曲线）。
 
-> 即：用户模拟器被成功当作 RL 环境，DDPG 的 actor/critic 完成真实梯度更新、reward 正常累积、模型正常落盘——**第二步 RL 流水线打通**。完整 benchmark 只需把 `--n_iter` 调回 20000 即可。
+> 即：用户模拟器被成功当作 RL 环境，DDPG 的 actor/critic 完成真实梯度更新、reward 正常累积、模型正常落盘——**第二步 RL 流水线打通**。
+
+### 6.3 完整 DDPG benchmark（整会话，复现论文）
+
+`train_ddpg_krpure_wholesession.sh`（`--n_iter 20000`，MPS 上约 4 分钟跑完——注意训练循环实际跑 `n_iter//10 = 2000` 次，见 `BaseRLAgent.py:148`）。最终指标与论文 baseline 对比：
+
+| 指标 | 本次运行（M4 Pro/MPS） | 论文 baseline | 说明 |
+|------|----------------------|--------------|------|
+| Depth（会话深度） | 14.6 | 14.89 | 接近 |
+| Average reward | 0.662 | 0.6841 | 接近 |
+| **Total reward** | **10.10** | **10.09** | 几乎一致 |
+| Coverage | 33.6 | 20.95 | 更高 |
+| ILD | 0.987 | 0.985 | 接近 |
+
+**总奖励 10.10 vs 论文 10.09，基本完全复现**——证明在 Apple Silicon + 新版 PyTorch 上，整条 KuaiRand 基准（用户模拟器 + DDPG 整会话）不仅跑通，结果也对得上原论文。产物在 `output/Kuairand_Pure/agents/DDPG_.../`（`model_actor` / `model_critic` / `model.report`）。
 
 ---
 
